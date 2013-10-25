@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 import sys
+import re
+
+# wikipedia links are like [[this]] or [[this|some text]]
+wiki_link = re.compile('\[\[([^\]\|]+)(\]\]|\|[^\]]+]])')
 
 start_tag = '<text xml:space="preserve">'
 end_tag = '</text>'
@@ -19,6 +23,10 @@ for line in sys.stdin:
     elif line.startswith('<'):
         # this line contains metadata; ignore
         continue
+    
+    # find the page name for all page links
+    matches = (match[0] for match in wiki_link.findall(line))
 
-    # print the number of words in this line
-    print len(line.split())
+    for match in matches:
+        # print each link line by line
+        print match
